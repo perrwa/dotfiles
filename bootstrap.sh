@@ -19,18 +19,10 @@ usage() {
 # --- Parse Flags ---
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --no-rosetta)
-      SKIP_ROSETTA=true
-      ;;
-    --no-formulae)
-      SKIP_FORMULAE=true
-      ;;
-    --no-casks)
-      SKIP_CASKS=true
-      ;;
-    --help)
-      usage
-      ;;
+    --no-rosetta)   SKIP_ROSETTA=true ;;
+    --no-formulae)  SKIP_FORMULAE=true ;;
+    --no-casks)     SKIP_CASKS=true ;;
+    --help)         usage ;;
     *)
       echo "Error: Unknown option '$1'"
       echo "Run with --help for available options."
@@ -95,7 +87,7 @@ FORMULAE=(
 )
 
 for formula in "${FORMULAE[@]}"; do
-  if brew list --formula | grep -q "^$(basename "$formula")$"; then
+  if brew list --formula "$formula" &>/dev/null; then
     echo "✓ $formula already installed"
   else
     echo "→ Installing $formula"
@@ -129,7 +121,7 @@ CASKS=(
 )
 
 for cask in "${CASKS[@]}"; do
-  if brew list --cask | grep -q "^$cask$"; then
+  if brew list --cask "$cask" &>/dev/null; then
     echo "✓ $cask already installed"
   else
     echo "→ Installing $cask"
@@ -180,9 +172,9 @@ defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -int 0
 
 # Restart affected apps
-killall Dock
-killall Finder
-killall SystemUIServer
+killall Dock 2>/dev/null || true
+killall Finder 2>/dev/null || true
+killall SystemUIServer 2>/dev/null || true
 
 header "Setup complete!"
 echo "Please restart your terminal to ensure all changes take effect."
