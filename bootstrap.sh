@@ -74,12 +74,16 @@ brew update
 # ---------------------------
 # Rosetta
 # ---------------------------
-header "Checking Rosetta 2"
-if /usr/bin/pgrep oahd &>/dev/null; then
-  echo "✓ Rosetta already installed"
+if [[ "$SKIP_ROSETTA" == false ]]; then
+  header "Checking Rosetta 2"
+  if /usr/bin/pgrep oahd &>/dev/null; then
+    echo "✓ Rosetta already installed"
+  else
+    echo "→ Installing Rosetta…"
+    softwareupdate --install-rosetta --agree-to-license || true
+  fi
 else
-  echo "→ Installing Rosetta…"
-  softwareupdate --install-rosetta --agree-to-license || true
+  header "Skipping Rosetta (flag)"
 fi
 
 # ---------------------------
