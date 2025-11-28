@@ -169,7 +169,7 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool t
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 
 # Disable infrared remote
-defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -int 0
+# defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -int 0
 
 # Restart affected apps
 killall Dock 2>/dev/null || true
