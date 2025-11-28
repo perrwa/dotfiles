@@ -143,20 +143,46 @@ done
 header "Setting macOS defaults"
 
 # Dock settings
-defaults write com.apple.dock autohide -bool true
-defaults write com.apple.dock tilesize -int 36
-defaults write com.apple.dock largesize -int 54
-defaults write com.apple.dock magnification -bool true
-defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock mineffect -string "scale"
+defaults write com.apple.dock showhidden -bool true
+defaults write com.apple.dock scroll-to-open -bool true
+defaults write com.apple.dock expose-group-apps -bool true
+defaults write com.apple.dock ResetLaunchPad -bool true
+
+# Screenshot behavior
+defaults write com.apple.screencapture disable-shadow -bool true
+defaults write com.apple.screencapture show-thumbnail -bool false
 
 # Finder settings
 defaults write com.apple.finder ShowPathbar -bool true
 defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+defaults write com.apple.finder _FXSortFoldersFirstOnDesktop -bool true
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Global system settings
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1
+defaults write -g AppleShowScrollBars -string "WhenScrolling"
+
+# Prevent .DS_Store files
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+# Input & trackpad behavior
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+
+# Disable infrared remote
+defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -int 0
 
 # Restart affected apps
 killall Dock
 killall Finder
+killall SystemUIServer
 
 header "Setup complete!"
 echo "Please restart your terminal to ensure all changes take effect."
