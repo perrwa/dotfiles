@@ -48,7 +48,7 @@ fi
 # ---------------------------
 header "Installing formulae"
 FORMULAE=(
-  "qmk/qmk/qmk"
+  # "qmk/qmk/qmk"
 )
 
 for formula in "${FORMULAE[@]}"; do
@@ -70,16 +70,16 @@ CASKS=(
   docker
   docker-desktop
   google-drive
-  handbrake-app
+  # handbrake-app
   iina
   karabiner-elements
-  logi-options+
-  logitune
-  macfuse
+  # logi-options+
+  # logitune
+  # macfuse
   microsoft-edge
   rocket
-  rode-connect
-  slack
+  # rode-connect
+  # slack
   spotify
   visual-studio-code
   zoom
