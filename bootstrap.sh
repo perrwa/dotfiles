@@ -1,6 +1,45 @@
 #!/usr/bin/env bash
 set -e
 
+SKIP_ROSETTA=false
+SKIP_FORMULAE=false
+SKIP_CASKS=false
+
+usage() {
+  echo "Usage: $0 [options]"
+  echo ""
+  echo "Options:"
+  echo "  --no-rosetta     Skip Rosetta installation"
+  echo "  --no-formulae    Skip installing Homebrew formuale"
+  echo "  --no-casks       Skip installing Homebrew casks"
+  echo "  --help           Show this help message"
+  exit 0
+}
+
+# --- Parse Flags ---
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --no-rosetta)
+      SKIP_ROSETTA=true
+      ;;
+    --no-formulae)
+      SKIP_FORMULAE=true
+      ;;
+    --no-casks)
+      SKIP_CASKS=true
+      ;;
+    --help)
+      usage
+      ;;
+    *)
+      echo "Error: Unknown option '$1'"
+      echo "Run with --help for available options."
+      exit 1
+      ;;
+  esac
+  shift
+done
+
 header() {
   echo ""
   echo "=== $1 ==="
