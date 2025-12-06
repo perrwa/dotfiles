@@ -140,6 +140,7 @@ defaults write com.apple.dock showhidden -bool true
 defaults write com.apple.dock scroll-to-open -bool true
 defaults write com.apple.dock expose-group-apps -bool true
 defaults write com.apple.dock ResetLaunchPad -bool true
+defaults write com.apple.dock persistent-apps -array
 
 # Screenshot behavior
 defaults write com.apple.screencapture disable-shadow -bool true
