@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-SKIP_ROSETTA=false
+SKIP_ROSETTA=true
 SKIP_FORMULAE=false
 SKIP_CASKS=false
 
