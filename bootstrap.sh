@@ -51,17 +51,17 @@ fi
 # ---------------------------
 # Homebrew
 # ---------------------------
-header "Checking Homebrew"
-if ! command -v brew &>/dev/null; then
-  echo "→ Installing Homebrew…"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-  echo "✓ Homebrew already installed"
-fi
+# header "Checking Homebrew"
+# if ! command -v brew &>/dev/null; then
+#   echo "→ Installing Homebrew…"
+#   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# else
+#   echo "✓ Homebrew already installed"
+# fi
 
-eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || true)"
+# eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || true)"
 
-brew update
+# brew update
 
 # ---------------------------
 # Rosetta
