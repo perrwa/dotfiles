@@ -102,22 +102,22 @@ header "Installing casks"
 CASKS=(
   1password
   appcleaner
-  docker
-  docker-desktop
-  google-drive
+  # docker
+  # docker-desktop
+  # google-drive
   # handbrake-app
-  iina
+  # iina
   karabiner-elements
   # logi-options+
   # logitune
   # macfuse
-  microsoft-edge
+  # microsoft-edge
   rocket
   # rode-connect
   # slack
   spotify
   visual-studio-code
-  zoom
+  # zoom
 )
 
 for cask in "${CASKS[@]}"; do
