@@ -103,6 +103,8 @@ if [[ "$SKIP_FORMULAE" == false ]]; then
 
   # All available formulae — add new entries here
   ALL_FORMULAE=(
+    "gh"
+    "node"
     "qmk/qmk/qmk"
   )
 

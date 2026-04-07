@@ -48,8 +48,10 @@ chmod +x bootstrap.sh
 
 ### Formulae (Command-line Tools)
 
-The following formulae are available. None are pre-selected by default:
+Available in the picker (none pre-selected):
 
+- **gh** - GitHub CLI
+- **node** - Node.js runtime
 - **qmk** - QMK keyboard firmware tools
 
 Add new entries to `ALL_FORMULAE` in the script to make them available, and to `DEFAULT_FORMULAE` to pre-select them.
