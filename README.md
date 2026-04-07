@@ -14,7 +14,7 @@ This bootstrap script automates the installation and configuration of developmen
 ## Quick Start
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/perrwa/dotfiles/master/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/perrwa/dotfiles/main/bootstrap.sh | bash
 ```
 
 Or clone and run locally:
