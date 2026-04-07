@@ -31,10 +31,11 @@ chmod +x bootstrap.sh
 ```
 ./bootstrap.sh [options]
 
---no-rosetta     Skip Rosetta 2 installation
---no-formulae    Skip installing Homebrew formulae
---no-casks       Skip installing Homebrew casks
---help           Show help message
+--no-rosetta       Skip Rosetta 2 installation
+--no-formulae      Skip installing Homebrew formulae
+--no-casks         Skip installing Homebrew casks
+--non-interactive  Install defaults without prompting
+--help             Show help message
 ```
 
 ## What Gets Installed
@@ -47,9 +48,15 @@ chmod +x bootstrap.sh
 
 ### Formulae (Command-line Tools)
 
-No formulae are enabled by default. Uncomment or add entries in the `FORMULAE` array to install command-line tools.
+The following formulae are available. None are pre-selected by default:
+
+- **qmk** - QMK keyboard firmware tools
+
+Add new entries to `ALL_FORMULAE` in the script to make them available, and to `DEFAULT_FORMULAE` to pre-select them.
 
 ### Applications (Casks)
+
+The script presents an interactive picker with all available casks. These are **pre-selected** by default:
 
 | Application | Description |
 |------------|-------------|
@@ -60,7 +67,24 @@ No formulae are enabled by default. Uncomment or add entries in the `FORMULAE` a
 | Spotify | Music streaming |
 | Visual Studio Code | Code editor |
 
-Additional casks (Docker, Slack, Zoom, etc.) are available commented out in the script — uncomment to include them.
+These are also available in the picker (not pre-selected):
+
+| Application | Description |
+|------------|-------------|
+| Docker | Container runtime |
+| Docker Desktop | Container platform GUI |
+| Google Drive | Cloud storage |
+| HandBrake | Video transcoder |
+| IINA | Media player |
+| Logi Options+ | Logitech device settings |
+| LogiTune | Logitech webcam/headset software |
+| macFUSE | File system extension |
+| Microsoft Edge | Web browser |
+| Rode Connect | Audio interface software |
+| Slack | Team communication |
+| Zoom | Video conferencing |
+
+Already-installed items are skipped automatically and won't appear in the picker.
 
 ### macOS Settings
 
@@ -106,36 +130,35 @@ The script configures the following system preferences:
 
 ## Customization
 
-To customize the script for your needs:
+To customize available packages, edit the arrays in `bootstrap.sh`:
 
-1. Edit the `FORMULAE` array to add/remove command-line tools
-2. Edit the `CASKS` array to add/remove applications
-3. Modify the macOS defaults section to adjust system preferences
+- `ALL_FORMULAE` / `ALL_CASKS` — everything shown in the interactive picker
+- `DEFAULT_FORMULAE` / `DEFAULT_CASKS` — items pre-selected in the picker (and installed in `--non-interactive` mode)
 
 Example:
 
 ```bash
-FORMULAE=(
+ALL_FORMULAE=(
   "qmk/qmk/qmk"
   "git"
   "node"
   "python"
 )
 
-CASKS=(
-  1password
-  visual-studio-code
-  # Add your preferred apps here
+DEFAULT_FORMULAE=(
+  "git"
+  "node"
 )
 ```
 
 ## Features
 
+- **Interactive**: Space-to-toggle selection of formulae and casks via [gum](https://github.com/charmbracelet/gum)
 - **Idempotent**: Safe to run multiple times
 - **Progress indicators**: Clear feedback on installation status
 - **Error handling**: Continues even if individual installations fail
-- **Smart checks**: Only installs what's missing
-- **CLI flags**: Skip Rosetta, formulae, or casks as needed
+- **Smart checks**: Only shows items that aren't already installed
+- **CLI flags**: Skip Rosetta, formulae, or casks; run non-interactively
 
 ## Post-Installation
 
