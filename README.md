@@ -77,8 +77,6 @@ These are also available in the picker (not pre-selected):
 | HandBrake | Video transcoder |
 | IINA | Media player |
 | Logi Options+ | Logitech device settings |
-| LogiTune | Logitech webcam/headset software |
-| macFUSE | File system extension |
 | Microsoft Edge | Web browser |
 | Rode Connect | Audio interface software |
 | Slack | Team communication |

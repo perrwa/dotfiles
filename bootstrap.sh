@@ -160,8 +160,6 @@ if [[ "$SKIP_CASKS" == false ]]; then
     iina
     karabiner-elements
     logi-options+
-    logitune
-    macfuse
     microsoft-edge
     rocket
     rode-connect
