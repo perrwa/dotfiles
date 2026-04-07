@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-SKIP_ROSETTA=true
+SKIP_ROSETTA=false
 SKIP_FORMULAE=false
 SKIP_CASKS=false
 
@@ -44,6 +44,10 @@ header "Checking Xcode command line tools"
 if ! xcode-select -p &>/dev/null; then
   echo "→ Installing Xcode command line tools…"
   xcode-select --install
+  echo "Waiting for Xcode tools to finish installing…"
+  until xcode-select -p &>/dev/null; do
+    sleep 5
+  done
 else
   echo "✓ Xcode tools already installed"
 fi
