@@ -26,6 +26,17 @@ chmod +x bootstrap.sh
 ./bootstrap.sh
 ```
 
+## Options
+
+```
+./bootstrap.sh [options]
+
+--no-rosetta     Skip Rosetta 2 installation
+--no-formulae    Skip installing Homebrew formulae
+--no-casks       Skip installing Homebrew casks
+--help           Show help message
+```
+
 ## What Gets Installed
 
 ### System Components
@@ -36,7 +47,7 @@ chmod +x bootstrap.sh
 
 ### Formulae (Command-line Tools)
 
-- **qmk** - QMK keyboard firmware tools
+No formulae are enabled by default. Uncomment or add entries in the `FORMULAE` array to install command-line tools.
 
 ### Applications (Casks)
 
@@ -44,36 +55,54 @@ chmod +x bootstrap.sh
 |------------|-------------|
 | 1Password | Password manager |
 | AppCleaner | Application uninstaller |
-| Docker & Docker Desktop | Container platform |
-| Google Drive | Cloud storage |
-| HandBrake | Video transcoder |
-| IINA | Media player |
 | Karabiner-Elements | Keyboard customization |
-| Logi Options+ | Logitech device settings |
-| LogiTune | Logitech webcam/headset software |
-| macFUSE | File system extension |
-| Microsoft Edge | Web browser |
 | Rocket | Emoji picker |
-| Rode Connect | Audio interface software |
-| Slack | Team communication |
 | Spotify | Music streaming |
 | Visual Studio Code | Code editor |
-| Zoom | Video conferencing |
+
+Additional casks (Docker, Slack, Zoom, etc.) are available commented out in the script — uncomment to include them.
 
 ### macOS Settings
 
 The script configures the following system preferences:
 
 **Dock:**
-- Enable auto-hide
-- Set tile size to 36px
-- Enable magnification (up to 54px)
-- Hide recent applications
+
+- Scale minimize effect
+- Show hidden app indicators
+- Enable scroll-to-open
+- Group windows by app in Exposé
+- Reset Launchpad layout
+- Clear persistent Dock apps
+
+**Screenshot:**
+
+- Disable window shadows in screenshots
+- Disable floating thumbnail after capture
 
 **Finder:**
-- Show path bar
-- Show status bar
+
+- Show path bar and status bar
+- Sort folders before files (including Desktop)
+- Default to list view
+- Search current folder by default
+- Disable extension change warnings
 - Show all file extensions
+
+**Global:**
+
+- Save new documents locally (not iCloud)
+- Small sidebar icon size
+- Show scroll bars only when scrolling
+
+**Storage:**
+
+- Prevent .DS_Store files on network and USB drives
+
+**Input:**
+
+- Enable three-finger trackpad drag
+- Disable press-and-hold for VS Code (enables key repeat)
 
 ## Customization
 
@@ -106,6 +135,7 @@ CASKS=(
 - **Progress indicators**: Clear feedback on installation status
 - **Error handling**: Continues even if individual installations fail
 - **Smart checks**: Only installs what's missing
+- **CLI flags**: Skip Rosetta, formulae, or casks as needed
 
 ## Post-Installation
 
