@@ -1,0 +1,13 @@
+# Template. On first run this is copied to ~/.ssh/config.local, which git does
+# not track. Put real work hostnames in that copy. This file itself is
+# committed to a public repo, so anything written here is published.
+#
+# Hostnames and IdentityFile paths only. Never key material.
+#
+# The tracked ~/.ssh/config Includes this at its top, because ssh is
+# first-match-wins and a block placed lower could never override an earlier one.
+
+# Host your-work-alias
+#   HostName git.internal.example.com
+#   AddKeysToAgent yes
+#   IdentityFile ~/.ssh/id_ed25519_work

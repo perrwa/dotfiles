@@ -1,185 +1,101 @@
-# macOS Bootstrap Script
+# dotfiles
 
-Automated setup script for configuring a new macOS development environment with essential tools and applications.
+Modular, idempotent macOS setup: Homebrew packages, dotfiles (zsh/git/ssh), and system defaults. Apple Silicon only.
 
-## Overview
+## Quick start
 
-This bootstrap script automates the installation and configuration of development tools, applications, and macOS system settings. It's designed to be idempotent, meaning you can run it multiple times safely without reinstalling already-present software.
-
-## Prerequisites
-
-- macOS (tested on Apple Silicon Macs)
-- Administrator access to your Mac
-
-## Quick Start
+Fresh machine, no git yet:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/perrwa/dotfiles/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/perrwa/dotfiles/main/install.sh | bash
 ```
 
-Or clone and run locally:
+`install.sh` is the only script meant to be piped. It installs the Xcode command line tools (for `git`), clones this repo to `~/git/dotfiles`, then hands off to `bootstrap.sh` with a real terminal attached — the actual setup never runs piped, since sudo prompts and the package picker need a TTY to read from.
+
+Already have the repo cloned:
 
 ```bash
-git clone https://github.com/perrwa/dotfiles.git
-cd dotfiles
-chmod +x bootstrap.sh
+cd ~/git/dotfiles
 ./bootstrap.sh
 ```
 
-## Options
+or `make` (prints available targets), `make all`, `make dotfiles`, etc.
+
+## Why not just `curl | bash` the whole thing?
+
+That's what this repo used to do, and it's why Homebrew's installer failed with a permissions error on a fresh machine. Piping into `bash` makes `bash` inherit the pipe as stdin, so when the installer prompts for your sudo password, it reads EOF instead and dies. `install.sh` exists specifically to get a real checkout on disk with a real TTY before anything sudo- or gum-driven runs.
+
+## Requirements
+
+- macOS on Apple Silicon (arm64). Intel is not supported.
+- Admin access.
+
+## What it does
+
+| Module | Does |
+|---|---|
+| `preflight` | TTY/root/arch guards, sudo priming + keepalive, Xcode CLT, Homebrew, Rosetta |
+| `packages` | Installs `Brewfile` (always) and offers `Brewfile.optional` via an interactive picker |
+| `dotfiles` | Symlinks `home/` into `$HOME` and `config/` into `~/.config`, links `ssh/config`, seeds untracked `*.local` files |
+| `macos` | Applies `defaults write` settings from `modules/defaults/*.sh`, only restarting Dock/Finder/SystemUIServer if something actually changed |
+
+Everything is safe to re-run: linking is a no-op when already correct, package installs go through `brew bundle` (idempotent by design), and macOS defaults are compared before writing.
+
+## CLI
 
 ```
 ./bootstrap.sh [options]
 
---no-rosetta       Skip Rosetta 2 installation
---no-formulae      Skip installing Homebrew formulae
---no-casks         Skip installing Homebrew casks
---non-interactive  Install defaults without prompting
---help             Show help message
+  --only a,b         Run only these modules (preflight,packages,dotfiles,macos)
+  --skip a,b         Run everything except these
+  --list             List modules and exit
+  --upgrade          Also run brew update && brew upgrade && brew cleanup
+  --non-interactive  No prompts; Brewfile only, no picker
+  --dry-run          Linking only: print every link/backup without performing it
+  --keep-going       Continue past a failing module (default is fail-fast)
+  --force-dock-reset Re-arm the first-run-only Dock wipe
+  --unlink           Undo the dotfiles module's symlinks, restoring backups
+  --help
 ```
 
-## What Gets Installed
-
-### System Components
-
-- **Xcode Command Line Tools** - Essential development tools and compilers
-- **Homebrew** - macOS package manager
-- **Rosetta 2** - Required for running x86_64 applications on Apple Silicon
-
-### Formulae (Command-line Tools)
-
-Available in the picker (none pre-selected):
-
-- **gh** - GitHub CLI
-- **node** - Node.js runtime
-- **qmk** - QMK keyboard firmware tools
-
-Add new entries to `ALL_FORMULAE` in the script to make them available, and to `DEFAULT_FORMULAE` to pre-select them.
-
-### Applications (Casks)
-
-The script presents an interactive picker with all available casks. These are **pre-selected** by default:
-
-| Application | Description |
-|------------|-------------|
-| 1Password | Password manager |
-| AppCleaner | Application uninstaller |
-| Karabiner-Elements | Keyboard customization |
-| Rocket | Emoji picker |
-| Spotify | Music streaming |
-| Visual Studio Code | Code editor |
-
-These are also available in the picker (not pre-selected):
-
-| Application | Description |
-|------------|-------------|
-| Docker | Container runtime |
-| Docker Desktop | Container platform GUI |
-| Google Drive | Cloud storage |
-| HandBrake | Video transcoder |
-| IINA | Media player |
-| Logi Options+ | Logitech device settings |
-| Microsoft Edge | Web browser |
-| Rode Connect | Audio interface software |
-| Slack | Team communication |
-| Zoom | Video conferencing |
-
-Already-installed items are skipped automatically and won't appear in the picker.
-
-### macOS Settings
-
-The script configures the following system preferences:
-
-**Dock:**
-
-- Scale minimize effect
-- Show hidden app indicators
-- Enable scroll-to-open
-- Group windows by app in Exposé
-- Reset Launchpad layout
-- Clear persistent Dock apps
-
-**Screenshot:**
-
-- Disable window shadows in screenshots
-- Disable floating thumbnail after capture
-
-**Finder:**
-
-- Show path bar and status bar
-- Sort folders before files (including Desktop)
-- Default to list view
-- Search current folder by default
-- Disable extension change warnings
-- Show all file extensions
-
-**Global:**
-
-- Save new documents locally (not iCloud)
-- Small sidebar icon size
-- Show scroll bars only when scrolling
-
-**Storage:**
-
-- Prevent .DS_Store files on network and USB drives
-
-**Input:**
-
-- Enable three-finger trackpad drag
-- Disable press-and-hold for VS Code (enables key repeat)
-
-## Customization
-
-To customize available packages, edit the arrays in `bootstrap.sh`:
-
-- `ALL_FORMULAE` / `ALL_CASKS` — everything shown in the interactive picker
-- `DEFAULT_FORMULAE` / `DEFAULT_CASKS` — items pre-selected in the picker (and installed in `--non-interactive` mode)
-
-Example:
+Bring a machine up to date later:
 
 ```bash
-ALL_FORMULAE=(
-  "qmk/qmk/qmk"
-  "git"
-  "node"
-  "python"
-)
-
-DEFAULT_FORMULAE=(
-  "git"
-  "node"
-)
+./bootstrap.sh --upgrade
 ```
 
-## Features
+This runs plain `brew upgrade`: no `--greedy` on casks, since that force-reinstalls self-updating apps like Docker/Slack/Zoom and can prompt for admin. Run `brew upgrade --cask --greedy` by hand if you want that.
 
-- **Interactive**: Space-to-toggle selection of formulae and casks via [gum](https://github.com/charmbracelet/gum)
-- **Idempotent**: Safe to run multiple times
-- **Progress indicators**: Clear feedback on installation status
-- **Error handling**: Continues even if individual installations fail
-- **Smart checks**: Only shows items that aren't already installed
-- **CLI flags**: Skip Rosetta, formulae, or casks; run non-interactively
+## Adding packages
 
-## Post-Installation
+- Always want it, every machine → add a `brew "..."` / `cask "..."` line to `Brewfile`.
+- Optional, offered in the picker → add it to `Brewfile.optional`. If it needs a tap, add the `tap "..."` line there too; taps are always carried into the install even if the picked list is empty.
 
-After the script completes:
+To catch drift (something installed by hand that isn't tracked):
 
-1. Restart your terminal to ensure all environment changes take effect
-2. Sign in to installed applications (1Password, Slack, etc.)
-3. Configure application-specific settings as needed
+```bash
+brew bundle dump --describe --force --file=Brewfile.new
+diff Brewfile Brewfile.new
+```
 
-## Troubleshooting
+Move anything worth keeping into `Brewfile` or `Brewfile.optional`, then delete `Brewfile.new`.
 
-If you encounter issues:
+## Dotfiles managed here
 
-- **Homebrew installation fails**: Ensure you have a stable internet connection
-- **Xcode tools not installing**: Run `xcode-select --install` manually
-- **Cask installation fails**: Some apps may require manual approval in System Settings → Privacy & Security
+- zsh: `~/.zshenv`, `~/.zprofile`, `~/.zshrc` (sources `~/.zsh/*.zsh`, then `~/.zshrc.local` if present).
+- git: `~/.config/git/config` and `~/.config/git/ignore`. Identity lives in `~/.config/git/config.local`, which is not tracked and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely; the dotfiles module removes it (backing it up to `~/.gitconfig.bak` first).
+- ssh: `~/.ssh/config` tracks only the personal `github.com` host, since this repo is public. Work-specific hosts (internal aliases, non-public hostnames) belong in `~/.ssh/config.local`, which is untracked and seeded from a placeholder template. Fill in real values there, never in the repo.
+
+## macOS settings
+
+See `modules/defaults/*.sh`, one file per domain (Dock, Finder, screenshots, global, storage, input). The Dock's `persistent-apps` wipe is first-run-only (guarded by a sentinel at `~/.local/state/dotfiles/dock-reset`), so re-running the script never clears a Dock you've since arranged by hand.
+
+## Post-install
+
+1. Restart your terminal.
+2. Sign in to installed apps (1Password, Slack, etc).
+3. Fill in `~/.ssh/config.local` with any work-specific host aliases.
 
 ## License
 
-MIT
-
-## Contributing
-
-Feel free to submit issues or pull requests for improvements.
+[MIT](LICENSE)
