@@ -21,10 +21,6 @@ cd ~/git/dotfiles
 
 or `make` (prints available targets), `make all`, `make dotfiles`, etc.
 
-## Why not just `curl | bash` the whole thing?
-
-That's what this repo used to do, and it's why Homebrew's installer failed with a permissions error on a fresh machine. Piping into `bash` makes `bash` inherit the pipe as stdin, so when the installer prompts for your sudo password, it reads EOF instead and dies. `install.sh` exists specifically to get a real checkout on disk with a real TTY before anything sudo- or gum-driven runs.
-
 ## Requirements
 
 - macOS on Apple Silicon (arm64). Intel is not supported.
