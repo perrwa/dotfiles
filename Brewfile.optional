@@ -1,0 +1,18 @@
+# Offered in the interactive picker (not installed under --non-interactive).
+# Any `tap` line here is always carried into the generated Brewfile so its
+# formulae resolve, even if the formula itself isn't picked... except the
+# formula/cask entries themselves are only added when chosen.
+
+tap "qmk/qmk"
+brew "qmk/qmk/qmk"
+
+cask "docker"
+cask "docker-desktop"
+cask "google-drive"
+cask "handbrake"
+cask "iina"
+cask "logi-options+"
+cask "microsoft-edge"
+cask "rode-connect"
+cask "slack"
+cask "zoom"
