@@ -4,9 +4,9 @@ set_default com.apple.dock showhidden -bool true
 set_default com.apple.dock scroll-to-open -bool true
 set_default com.apple.dock expose-group-apps -bool true
 
-# Clearing the Dock is a one-time, fresh-machine action, not something to
-# repeat on every run (it would wipe a hand-curated Dock each time).
-# Guarded by a sentinel; --force-dock-reset re-arms it deliberately.
+# Clearing the Dock runs once, on a fresh machine. Repeating it every run
+# would wipe a hand-curated Dock each time, so it's guarded by a sentinel;
+# --force-dock-reset re-arms it deliberately.
 DOCK_RESET_SENTINEL="$HOME/.local/state/dotfiles/dock-reset"
 DOCK_RESET_BACKUP="$HOME/.local/state/dotfiles/dock-backup.plist"
 if [[ ! -e "$DOCK_RESET_SENTINEL" || "${FORCE_DOCK_RESET:-false}" == true ]]; then

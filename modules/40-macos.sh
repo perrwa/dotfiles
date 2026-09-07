@@ -5,8 +5,8 @@
 #
 # Compares the current value before writing so reruns are silent and
 # DEFAULTS_CHANGED only gets set on a real change (killall triggers off it).
-# Handles the -bool normalization gap: `defaults write -bool true` stores
-# `1`/`0`, but a plain string compare against "true"/"false" would always
+# Handles the -bool normalization gap. `defaults write -bool true` stores
+# `1`/`0`, so a plain string compare against "true"/"false" would always
 # differ and force a write on every run.
 set_default() {
   local domain="$1" key="$2" type="$3" value="$4"

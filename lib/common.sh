@@ -72,16 +72,15 @@ stop_sudo_keepalive() {
 }
 
 # ---------------------------
-# link() — symlink a payload into place, backing up real files/dirs.
+# link(): symlink a payload into place, backing up real files/dirs.
 #
 #   link <src-in-repo> <dst-in-home>
 #
-# Behavior:
 #   - already correct symlink        -> no-op, silent
 #   - symlink pointing elsewhere     -> repoint, log it
 #   - real file or dir at dst        -> move to <dst>.bak, log loudly, then link
-#   - dangling symlink at dst        -> treated as "existing", backed up (not
-#                                        left behind as a broken link)
+#   - dangling symlink at dst        -> treated as existing and backed up,
+#                                        same as a real file
 # ---------------------------
 link() {
   local src="$1" dst="$2"
@@ -104,7 +103,7 @@ link() {
   info "linked $dst -> $src"
 }
 
-# unlink() — restore a .bak file if present, otherwise just remove the link.
+# unlink_path(): restore a .bak file if present, otherwise just remove the link.
 unlink_path() {
   local dst="$1"
   local bak="${dst}.bak"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Homebrew install/shellenv, and the Brewfile + Brewfile.optional picker.
+# Installs Homebrew, sets up shellenv, and drives the Brewfile picker.
 # Sourced by bootstrap.sh (after common.sh); assumes DOTFILES_DIR is set.
 
 BREW_PREFIX="/opt/homebrew"
@@ -29,12 +29,12 @@ _brew_taps() {
   grep -h '^tap ' "$@" 2>/dev/null || true
 }
 
-# Non-tap, non-comment, non-blank lines — the actual package entries.
+# Matches the actual package entries — non-tap, non-comment, non-blank lines.
 _brew_entries() {
   grep -hE '^(brew|cask) ' "$1" 2>/dev/null || true
 }
 
-# install_packages — installs Brewfile always; if interactive, offers
+# install_packages(): installs Brewfile always; if interactive, offers
 # Brewfile.optional entries via gum and installs the chosen subset too.
 install_packages() {
   local base="$DOTFILES_DIR/Brewfile"

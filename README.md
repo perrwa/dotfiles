@@ -19,11 +19,11 @@ cd ~/git/dotfiles
 ./bootstrap.sh
 ```
 
-or `make` (prints available targets), `make all`, `make zsh`, etc.
+or `make` (prints available targets), `make all`, `make dotfiles`, etc.
 
 ## Why not just `curl | bash` the whole thing?
 
-That's what this repo used to do, and it's why Homebrew's installer failed with a permissions error on a fresh machine: piped into `bash`, stdin is the pipe, not your terminal, so the sudo password prompt reads EOF and dies instead of asking you. `install.sh` exists specifically to get a real checkout on disk with a real TTY before anything sudo- or gum-driven runs.
+That's what this repo used to do, and it's why Homebrew's installer failed with a permissions error on a fresh machine. Piping into `bash` makes `bash` inherit the pipe as stdin, so when the installer prompts for your sudo password, it reads EOF instead and dies. `install.sh` exists specifically to get a real checkout on disk with a real TTY before anything sudo- or gum-driven runs.
 
 ## Requirements
 
@@ -64,12 +64,12 @@ Bring a machine up to date later:
 ./bootstrap.sh --upgrade
 ```
 
-This runs plain `brew upgrade` — no `--greedy` on casks, since that force-reinstalls self-updating apps like Docker/Slack/Zoom and can prompt for admin. Run `brew upgrade --cask --greedy` by hand if you want that.
+This runs plain `brew upgrade`: no `--greedy` on casks, since that force-reinstalls self-updating apps like Docker/Slack/Zoom and can prompt for admin. Run `brew upgrade --cask --greedy` by hand if you want that.
 
 ## Adding packages
 
 - Always want it, every machine → add a `brew "..."` / `cask "..."` line to `Brewfile`.
-- Optional, offered in the picker → add it to `Brewfile.optional`. If it needs a tap, add the `tap "..."` line there too — it's always carried into the install even if the picked list is empty.
+- Optional, offered in the picker → add it to `Brewfile.optional`. If it needs a tap, add the `tap "..."` line there too; taps are always carried into the install even if the picked list is empty.
 
 To catch drift (something installed by hand that isn't tracked):
 
@@ -82,9 +82,9 @@ Move anything worth keeping into `Brewfile` or `Brewfile.optional`, then delete 
 
 ## Dotfiles managed here
 
-- **zsh** — `~/.zshenv`, `~/.zprofile`, `~/.zshrc` (sources `~/.zsh/*.zsh`, then `~/.zshrc.local` if present).
-- **git** — `~/.config/git/config` and `~/.config/git/ignore`. Identity lives in `~/.config/git/config.local`, which is **not tracked** and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely — the dotfiles module removes it (backing it up to `~/.gitconfig.bak` first).
-- **ssh** — `~/.ssh/config` tracks only the personal `github.com` host, since **this repo is public**. Work-specific hosts (internal aliases, non-public hostnames) belong in `~/.ssh/config.local`, which is untracked and seeded from a placeholder template — fill in real values there, never in the repo.
+- zsh: `~/.zshenv`, `~/.zprofile`, `~/.zshrc` (sources `~/.zsh/*.zsh`, then `~/.zshrc.local` if present).
+- git: `~/.config/git/config` and `~/.config/git/ignore`. Identity lives in `~/.config/git/config.local`, which is not tracked and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely; the dotfiles module removes it (backing it up to `~/.gitconfig.bak` first).
+- ssh: `~/.ssh/config` tracks only the personal `github.com` host, since this repo is public. Work-specific hosts (internal aliases, non-public hostnames) belong in `~/.ssh/config.local`, which is untracked and seeded from a placeholder template. Fill in real values there, never in the repo.
 
 ## macOS settings
 
@@ -98,4 +98,4 @@ See `modules/defaults/*.sh`, one file per domain (Dock, Finder, screenshots, glo
 
 ## License
 
-MIT
+[MIT](LICENSE)

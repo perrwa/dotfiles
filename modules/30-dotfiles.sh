@@ -18,7 +18,7 @@ module_run() {
     info "[dry-run] would remove ~/.gitconfig (shadows XDG git config) and link config/git/*"
   else
     # ~/.gitconfig, if present, makes git ignore ~/.config/git/config
-    # entirely (git-config(1)). It must go, not just be left alone.
+    # entirely (git-config(1)). So the module backs it up and removes it.
     if [[ -e "$HOME/.gitconfig" && ! -L "$HOME/.gitconfig" ]]; then
       warn "$HOME/.gitconfig exists and would shadow the XDG git config; backing up to $HOME/.gitconfig.bak"
       mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak"

@@ -1,7 +1,7 @@
-# Offered in the interactive picker (not installed under --non-interactive).
-# Any `tap` line here is always carried into the generated Brewfile so its
-# formulae resolve, even if the formula itself isn't picked... except the
-# formula/cask entries themselves are only added when chosen.
+# Offered in the interactive picker; nothing here installs under
+# --non-interactive. `tap` lines are the exception. They are always applied,
+# even when nothing from this file is picked, so a picked formula can always
+# resolve its tap.
 
 tap "qmk/qmk"
 brew "qmk/qmk/qmk"
