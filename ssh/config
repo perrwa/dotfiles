@@ -1,0 +1,5 @@
+Include ~/.ssh/config.local
+
+Host github.com
+  AddKeysToAgent yes
+  IdentityFile ~/.ssh/id_ed25519

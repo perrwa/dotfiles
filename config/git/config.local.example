@@ -1,0 +1,5 @@
+# Copied to ~/.config/git/config.local on first run if that file doesn't
+# already exist. Not tracked by git — edit the copy, not this template.
+[user]
+	email = 7255333+perrwa@users.noreply.github.com
+	name = Perry Wang

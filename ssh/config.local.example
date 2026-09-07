@@ -1,0 +1,16 @@
+# Copied to ~/.ssh/config.local on first run if that file doesn't already
+# exist. Not tracked by git (public repo) — edit the copy, not this template.
+# Hostnames and IdentityFile paths only; never key material.
+#
+# This file is a placeholder template only — do not fill in real work
+# hostnames here, since this template is tracked by the repo. Fill them
+# in on the untracked copy at ~/.ssh/config.local instead.
+#
+# ssh is first-match-wins, so this file is Include'd at the TOP of the
+# tracked ~/.ssh/config — a later block here would never override an
+# earlier one in the tracked file.
+
+# Host your-work-alias
+#   HostName git.internal.example.com
+#   AddKeysToAgent yes
+#   IdentityFile ~/.ssh/id_ed25519_work

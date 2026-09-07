@@ -1,0 +1,10 @@
+[core]
+	excludesfile = ~/.config/git/ignore
+[init]
+	defaultBranch = main
+[pull]
+	rebase = false
+
+# Identity and any machine-specific overrides live outside the repo.
+[include]
+	path = ~/.config/git/config.local
