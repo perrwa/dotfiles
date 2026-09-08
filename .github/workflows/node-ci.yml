@@ -1,0 +1,64 @@
+name: Node CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version-file:
+        description: Path to the file pinning the Node version
+        type: string
+        default: package.json
+      cache-path:
+        description: Path to cache in addition to npm's own cache (e.g. a fetched font). Skipped when empty.
+        type: string
+        default: ''
+      cache-key-file:
+        description: File to hash for the extra cache key
+        type: string
+        default: ''
+      cache-key-prefix:
+        description: Prefix for the extra cache key
+        type: string
+        default: aux
+      typecheck:
+        description: Run `npm run check` (e.g. astro check / tsc)
+        type: boolean
+        default: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version-file: ${{ inputs.node-version-file }}
+          cache: npm
+
+      - name: Cache extra path
+        if: inputs.cache-path != ''
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.cache-path }}
+          key: ${{ inputs.cache-key-prefix }}-${{ hashFiles(inputs.cache-key-file) }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        if: inputs.typecheck
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
