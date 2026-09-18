@@ -1,0 +1,10 @@
+# Template. On first run this is copied to ~/.zshenv.local, which git does
+# not track. Put real work-specific env vars in that copy. This file itself
+# is committed to a public repo, so anything written here is published.
+#
+# Sourced by every zsh (via .zshenv), so keep it minimal — non-interactive
+# callers (git commit, gh, editors) see this too, not just interactive shells.
+
+# A corporate proxy/CA bundle override, if your employer requires one:
+# CORP_CA="/path/to/corp-root-ca.pem"
+# [[ -r "$CORP_CA" ]] && export REQUESTS_CA_BUNDLE="$CORP_CA"

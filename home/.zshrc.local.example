@@ -1,0 +1,9 @@
+# Template. On first run this is copied to ~/.zshrc.local, which git does
+# not track. Put real work-specific interactive-shell config in that copy.
+# This file itself is committed to a public repo, so anything written here
+# is published.
+#
+# Interactive shells only, sourced last (after all of ~/.zsh/*.zsh).
+
+# Example: a work-tool completion script that shouldn't ship in a public repo:
+# [[ -s ~/.zsh/completions/work-tool.zsh ]] && source ~/.zsh/completions/work-tool.zsh
