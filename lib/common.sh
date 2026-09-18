@@ -132,6 +132,7 @@ list_modules() {
 
 run_module() {
   local file="$1"
+  local hook="${2:-module_run}"
   local name
   name=$(basename "$file" .sh)
   name="${name#*-}"
@@ -147,8 +148,8 @@ run_module() {
   header "$name"
   # shellcheck disable=SC1090
   source "$file"
-  if declare -f module_run >/dev/null; then
-    if module_run; then
+  if declare -f "$hook" >/dev/null; then
+    if "$hook"; then
       :
     else
       if [[ "${KEEP_GOING:-false}" == true ]]; then
@@ -157,8 +158,8 @@ run_module() {
         die "module '$name' failed. Fix the error above, or re-run with --keep-going to skip past it."
       fi
     fi
-    unset -f module_run
-  else
+    unset -f "$hook"
+  elif [[ "$hook" == "module_run" ]]; then
     warn "module '$name' defines no module_run(), skipping"
   fi
 }
