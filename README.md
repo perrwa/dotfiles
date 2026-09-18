@@ -78,7 +78,7 @@ Move anything worth keeping into `Brewfile` or `Brewfile.optional`, then delete 
 
 ## Dotfiles managed here
 
-- zsh: `~/.zshenv`, `~/.zprofile`, `~/.zshrc` (sources `~/.zsh/*.zsh`, then `~/.zshrc.local` if present).
+- zsh: `~/.zshenv`, `~/.zprofile`, `~/.zshrc`. `.zshrc` sources `~/.zsh/*.zsh` in order — `10-fpath.zsh`, `20-completion.zsh`, `30-history.zsh`, `40-aliases.zsh`, `50-tools.zsh` — then `~/.zshrc.local` if present. Each `~/.zsh/*.zsh` file is linked individually, so a real `~/.zsh/completions/` directory (hand-installed completion scripts) is left alone. Work-specific env vars (corporate CA overrides, PATs, private completion sources) don't belong in this public repo — they go in `~/.zshenv.local`, `~/.zprofile.local`, and `~/.zshrc.local`, each untracked and seeded from a `*.local.example` template on first run, same pattern as the git/ssh config below.
 - git: `~/.config/git/config` and `~/.config/git/ignore`. Identity lives in `~/.config/git/config.local`, which is not tracked and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely; the dotfiles module removes it (backing it up to `~/.gitconfig.bak` first).
 - ssh: `~/.ssh/config` tracks only the personal `github.com` host, since this repo is public. Work-specific hosts (internal aliases, non-public hostnames) belong in `~/.ssh/config.local`, which is untracked and seeded from a placeholder template. Fill in real values there, never in the repo.
 
