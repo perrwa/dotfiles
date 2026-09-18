@@ -1,2 +1,4 @@
 export XDG_CONFIG_HOME="$HOME/.config"
-export PATH="$HOME/.local/bin:$PATH"
+export EDITOR="code --wait"
+
+[[ -r "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

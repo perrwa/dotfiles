@@ -1,0 +1,10 @@
+# Template. On first run this is copied to ~/.zprofile.local, which git does
+# not track. Put real work-specific env vars in that copy. This file itself
+# is committed to a public repo, so anything written here is published.
+#
+# Login shells only, once per session — a good place for secrets pulled
+# from a credential helper (never store secrets in plaintext here).
+
+# Example: a PAT pulled from `gh` for a work GitHub host, not stored in
+# plaintext:
+# export GITHUB_PAT_WORK="$(gh auth token -h github.example.com 2>/dev/null)"
