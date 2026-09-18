@@ -21,7 +21,7 @@ usage() {
 Usage: ./bootstrap.sh [options]
 
 Options:
-  --only a,b         Run only these modules (preflight,packages,dotfiles,macos)
+  --only a,b         Run only these modules (preflight,packages,zsh,git,ssh,macos)
   --skip a,b         Run everything except these
   --list             List modules and exit
   --upgrade          Also run brew update && brew upgrade && brew cleanup
@@ -29,7 +29,7 @@ Options:
   --dry-run          Linking only: print every link/backup without performing it
   --keep-going       Continue past a failing module
   --force-dock-reset Re-arm the first-run-only Dock wipe
-  --unlink           Undo the dotfiles module's symlinks, restoring backups
+  --unlink           Undo modules' symlinks, restoring backups (honors --only/--skip)
   --help             Show this help message
 EOF
   exit 0
@@ -58,10 +58,10 @@ done
 export DOTFILES_DIR NON_INTERACTIVE DRY_RUN KEEP_GOING FORCE_DOCK_RESET ONLY SKIP
 
 if [[ "$UNLINK" == true ]]; then
-  header "Unlinking dotfiles"
-  # shellcheck disable=SC1091
-  source "$DOTFILES_DIR/modules/30-dotfiles.sh"
-  module_unlink
+  header "Unlinking"
+  for module in "$DOTFILES_DIR"/modules/*.sh; do
+    run_module "$module" module_unlink
+  done
   exit 0
 fi
 
