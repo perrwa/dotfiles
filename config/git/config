@@ -4,7 +4,19 @@
 	defaultBranch = main
 [pull]
 	rebase = false
+[github]
+	account = perrwa
+[user]
+	name = Perry Wang
+	email = 7255333+perrwa@users.noreply.github.com
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true
+[gpg]
+	format = ssh
 
-# Identity and any machine-specific overrides live outside the repo.
+# signingkey, allowedSignersFile, and any per-directory includeIf
+# overrides are machine-specific and live outside the repo.
 [include]
 	path = ~/.config/git/config.local

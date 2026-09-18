@@ -1,5 +1,14 @@
 # Copied to ~/.config/git/config.local on first run if that file doesn't
 # already exist. Not tracked by git. Edit the copy at ~/.config/git/config.local.
+#
+# Identity and signing prefs shared across machines live in the tracked
+# config/git/config; this file is only for what's actually machine-specific.
+
 [user]
-	email = 7255333+perrwa@users.noreply.github.com
-	name = Perry Wang
+	signingkey = ~/.ssh/id_ed25519.pub
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
+
+# Switch identity for a directory tree (e.g. a separate work checkout root):
+# [includeIf "gitdir:~/git-work/"]
+# 	path = ~/.gitconfig-work
