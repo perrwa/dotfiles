@@ -6,8 +6,11 @@
 tap "qmk/qmk"
 brew "qmk/qmk/qmk"
 
+brew "direnv"
+
 cask "docker"
 cask "docker-desktop"
+cask "google-cloud-sdk"
 cask "google-drive"
 cask "handbrake"
 cask "iina"
