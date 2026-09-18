@@ -32,8 +32,13 @@ or `make` (prints available targets), `make all`, `make dotfiles`, etc.
 |---|---|
 | `preflight` | TTY/root/arch guards, sudo priming + keepalive, Xcode CLT, Homebrew, Rosetta |
 | `packages` | Installs `Brewfile` (always) and offers `Brewfile.optional` via an interactive picker |
-| `dotfiles` | Symlinks `home/` into `$HOME` and `config/` into `~/.config`, links `ssh/config`, seeds untracked `*.local` files |
+| `zsh` | Symlinks `home/.zshenv`/`.zprofile`/`.zshrc`/`.zsh/*.zsh`, seeds untracked `*.local` files |
+| `git` | Symlinks `config/git/*` into `~/.config/git`, seeds `config.local` |
+| `ssh` | Symlinks `ssh/config` into `~/.ssh`, seeds `config.local` |
 | `macos` | Applies `defaults write` settings from `modules/defaults/*.sh`, only restarting Dock/Finder/SystemUIServer if something actually changed |
+
+`zsh`, `git`, and `ssh` used to be one `dotfiles` module; `make dotfiles` still works as a
+shorthand for all three, but each can now be run (or `--unlink`ed) on its own.
 
 Everything is safe to re-run: linking is a no-op when already correct, package installs go through `brew bundle` (idempotent by design), and macOS defaults are compared before writing.
 
@@ -42,7 +47,7 @@ Everything is safe to re-run: linking is a no-op when already correct, package i
 ```
 ./bootstrap.sh [options]
 
-  --only a,b         Run only these modules (preflight,packages,dotfiles,macos)
+  --only a,b         Run only these modules (preflight,packages,zsh,git,ssh,macos)
   --skip a,b         Run everything except these
   --list             List modules and exit
   --upgrade          Also run brew update && brew upgrade && brew cleanup
@@ -50,7 +55,7 @@ Everything is safe to re-run: linking is a no-op when already correct, package i
   --dry-run          Linking only: print every link/backup without performing it
   --keep-going       Continue past a failing module (default is fail-fast)
   --force-dock-reset Re-arm the first-run-only Dock wipe
-  --unlink           Undo the dotfiles module's symlinks, restoring backups
+  --unlink           Undo modules' symlinks, restoring backups (honors --only/--skip)
   --help
 ```
 
@@ -79,7 +84,7 @@ Move anything worth keeping into `Brewfile` or `Brewfile.optional`, then delete 
 ## Dotfiles managed here
 
 - zsh: `~/.zshenv`, `~/.zprofile`, `~/.zshrc`. `.zshrc` sources `~/.zsh/*.zsh` in order — `10-fpath.zsh`, `20-completion.zsh`, `30-history.zsh`, `40-aliases.zsh`, `50-tools.zsh` — then `~/.zshrc.local` if present. Each `~/.zsh/*.zsh` file is linked individually, so a real `~/.zsh/completions/` directory (hand-installed completion scripts) is left alone. Work-specific env vars (corporate CA overrides, PATs, private completion sources) don't belong in this public repo — they go in `~/.zshenv.local`, `~/.zprofile.local`, and `~/.zshrc.local`, each untracked and seeded from a `*.local.example` template on first run, same pattern as the git/ssh config below.
-- git: `~/.config/git/config` and `~/.config/git/ignore`. Identity lives in `~/.config/git/config.local`, which is not tracked and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely; the dotfiles module removes it (backing it up to `~/.gitconfig.bak` first).
+- git: `~/.config/git/config` and `~/.config/git/ignore`. Identity and signing prefs (`user.name`/`email`, `commit.gpgsign`, `gpg.format`) are tracked since they're the same on every machine; `user.signingkey`, `gpg.ssh.allowedSignersFile`, and any per-directory `includeIf` overrides are machine-specific and live in `~/.config/git/config.local`, which is not tracked and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely; the `git` module removes it (backing it up to `~/.gitconfig.bak` first).
 - ssh: `~/.ssh/config` tracks only the personal `github.com` host, since this repo is public. Work-specific hosts (internal aliases, non-public hostnames) belong in `~/.ssh/config.local`, which is untracked and seeded from a placeholder template. Fill in real values there, never in the repo.
 
 ## macOS settings
