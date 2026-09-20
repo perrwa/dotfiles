@@ -10,37 +10,33 @@ Fresh machine, no git yet:
 curl -fsSL https://raw.githubusercontent.com/perrwa/dotfiles/main/install.sh | bash
 ```
 
-`install.sh` is the only script meant to be piped. It installs the Xcode command line tools (for `git`), clones this repo to `~/git/dotfiles`, then hands off to `bootstrap.sh` with a real terminal attached — the actual setup never runs piped, since sudo prompts and the package picker need a TTY to read from.
-
-Already have the repo cloned:
+Already cloned:
 
 ```bash
 cd ~/git/dotfiles
 ./bootstrap.sh
 ```
 
-or `make` (prints available targets), `make all`, `make dotfiles`, etc.
+or `make` (lists targets), `make all`, `make dotfiles`, etc.
 
 ## Requirements
 
-- macOS on Apple Silicon (arm64). Intel is not supported.
-- Admin access.
+Apple Silicon macOS, admin access.
 
-## What it does
+## Modules
 
 | Module | Does |
 |---|---|
-| `preflight` | TTY/root/arch guards, sudo priming + keepalive, Xcode CLT, Homebrew, Rosetta |
-| `packages` | Installs `Brewfile` (always) and offers `Brewfile.optional` via an interactive picker |
-| `zsh` | Symlinks `home/.zshenv`/`.zprofile`/`.zshrc`/`.zsh/*.zsh`, seeds untracked `*.local` files |
+| `preflight` | TTY/root/arch guards, sudo, Xcode CLT, Homebrew, Rosetta |
+| `packages` | Installs `Brewfile` (always), offers `Brewfile.optional` via picker |
+| `zsh` | Symlinks `home/.zshenv`/`.zprofile`/`.zshrc`/`.zsh/*.zsh`, seeds `*.local` files |
 | `git` | Symlinks `config/git/*` into `~/.config/git`, seeds `config.local` |
 | `ssh` | Symlinks `ssh/config` into `~/.ssh`, seeds `config.local` |
-| `macos` | Applies `defaults write` settings from `modules/defaults/*.sh`, only restarting Dock/Finder/SystemUIServer if something actually changed |
+| `macos` | Applies `defaults write` from `modules/defaults/*.sh`, restarts Dock/Finder/SystemUIServer only if changed |
 
-`zsh`, `git`, and `ssh` used to be one `dotfiles` module; `make dotfiles` still works as a
-shorthand for all three, but each can now be run (or `--unlink`ed) on its own.
+`make dotfiles` runs `zsh`+`git`+`ssh` together; each also runs (or `--unlink`s) on its own.
 
-Everything is safe to re-run: linking is a no-op when already correct, package installs go through `brew bundle` (idempotent by design), and macOS defaults are compared before writing.
+Safe to re-run: linking no-ops when correct, `brew bundle` is idempotent, macOS defaults are diffed before writing.
 
 ## CLI
 
@@ -65,31 +61,31 @@ Bring a machine up to date later:
 ./bootstrap.sh --upgrade
 ```
 
-This runs plain `brew upgrade`: no `--greedy` on casks, since that force-reinstalls self-updating apps like Docker/Slack/Zoom and can prompt for admin. Run `brew upgrade --cask --greedy` by hand if you want that.
+Plain `brew upgrade`, no `--greedy` on casks (that force-reinstalls self-updating apps and can prompt for admin). Run `brew upgrade --cask --greedy` by hand if wanted.
 
 ## Adding packages
 
-- Always want it, every machine → add a `brew "..."` / `cask "..."` line to `Brewfile`.
-- Optional, offered in the picker → add it to `Brewfile.optional`. If it needs a tap, add the `tap "..."` line there too; taps are always carried into the install even if the picked list is empty.
+- Always-want, every machine → `brew "..."` / `cask "..."` in `Brewfile`.
+- Optional/picker → `Brewfile.optional` (add `tap "..."` there too if needed).
 
-To catch drift (something installed by hand that isn't tracked):
+Catch drift (installed by hand, untracked):
 
 ```bash
 brew bundle dump --describe --force --file=Brewfile.new
 diff Brewfile Brewfile.new
 ```
 
-Move anything worth keeping into `Brewfile` or `Brewfile.optional`, then delete `Brewfile.new`.
+Move anything worth keeping into `Brewfile`/`Brewfile.optional`, delete `Brewfile.new`.
 
 ## Dotfiles managed here
 
-- zsh: `~/.zshenv`, `~/.zprofile`, `~/.zshrc`. `.zshrc` sources `~/.zsh/*.zsh` in order — `10-fpath.zsh`, `20-completion.zsh`, `30-history.zsh`, `40-aliases.zsh`, `50-tools.zsh` — then `~/.zshrc.local` if present. Each `~/.zsh/*.zsh` file is linked individually, so a real `~/.zsh/completions/` directory (hand-installed completion scripts) is left alone. Work-specific env vars (corporate CA overrides, PATs, private completion sources) don't belong in this public repo — they go in `~/.zshenv.local`, `~/.zprofile.local`, and `~/.zshrc.local`, each untracked and seeded from a `*.local.example` template on first run, same pattern as the git/ssh config below.
-- git: `~/.config/git/config` and `~/.config/git/ignore`. Identity and signing prefs (`user.name`/`email`, `commit.gpgsign`, `gpg.format`) are tracked since they're the same on every machine; `user.signingkey`, `gpg.ssh.allowedSignersFile`, and any per-directory `includeIf` overrides are machine-specific and live in `~/.config/git/config.local`, which is not tracked and gets seeded from `config/git/config.local.example` on first run. Note: `~/.gitconfig`, if it exists, makes git ignore the XDG config entirely; the `git` module removes it (backing it up to `~/.gitconfig.bak` first).
-- ssh: `~/.ssh/config` tracks only the personal `github.com` host, since this repo is public. Work-specific hosts (internal aliases, non-public hostnames) belong in `~/.ssh/config.local`, which is untracked and seeded from a placeholder template. Fill in real values there, never in the repo.
+- zsh links `~/.zshenv`, `~/.zprofile`, `~/.zshrc`. `.zshrc` sources `~/.zsh/*.zsh` in order (`10-fpath`, `20-completion`, `30-history`, `40-aliases`, `50-tools`), then `~/.zshrc.local`. Work-specific stuff (corporate CA, PATs) goes in the untracked `*.local` files, seeded from `*.local.example` on first run.
+- git links `~/.config/git/config` + `ignore`. Identity/signing (`user.name`/`email`, `gpgsign`) is tracked; `signingkey`, `allowedSignersFile`, per-dir `includeIf` go in untracked `config.local`. An existing `~/.gitconfig` makes git ignore XDG config, so the module removes it (backs up to `~/.gitconfig.bak` first).
+- ssh links `~/.ssh/config`, which tracks only the personal `github.com` host (repo is public). Work hosts go in untracked `config.local`.
 
 ## macOS settings
 
-See `modules/defaults/*.sh`, one file per domain (Dock, Finder, screenshots, global, storage, input). The Dock's `persistent-apps` wipe is first-run-only (guarded by a sentinel at `~/.local/state/dotfiles/dock-reset`), so re-running the script never clears a Dock you've since arranged by hand.
+`modules/defaults/*.sh`, one file per domain. Dock's `persistent-apps` wipe is first-run-only (sentinel at `~/.local/state/dotfiles/dock-reset`), so re-running never clears a Dock you've since rearranged.
 
 ## Post-install
 
