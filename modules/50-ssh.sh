@@ -4,7 +4,7 @@ module_run() {
   local d="$DOTFILES_DIR"
 
   if [[ "${DRY_RUN:-false}" == true ]]; then
-    info "[dry-run] would link ssh/config, chmod ~/.ssh 700, seed ~/.ssh/config.local"
+    info "[dry-run] would link ssh/config, chmod ~/.ssh 700, seed ~/.ssh/config.local and link it back into ssh/"
     return 0
   fi
 
@@ -20,8 +20,11 @@ module_run() {
   # Not only the seed branch — a hand-created config.local may have been
   # left world/group readable.
   chmod 600 "$HOME/.ssh/config.local"
+  # Reverse link (repo -> ~) so the real file is editable from the repo.
+  link "$HOME/.ssh/config.local" "$d/ssh/config.local"
 }
 
 module_unlink() {
   unlink_path "$HOME/.ssh/config"
+  unlink_path "$DOTFILES_DIR/ssh/config.local"
 }
