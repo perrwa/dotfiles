@@ -4,7 +4,7 @@ module_run() {
   local d="$DOTFILES_DIR"
 
   if [[ "${DRY_RUN:-false}" == true ]]; then
-    info "[dry-run] would remove ~/.gitconfig (shadows XDG git config) and link config/git/*"
+    info "[dry-run] would remove ~/.gitconfig (shadows XDG git config) link config/git/*, link config.local back into config/git/"
     return 0
   fi
 
@@ -24,11 +24,14 @@ module_run() {
     cp "$d/config/git/config.local.example" "$HOME/.config/git/config.local"
     ok "seeded ~/.config/git/config.local"
   fi
+  # Reverse link (repo -> ~) so the real file is editable from the repo.
+  link "$HOME/.config/git/config.local" "$d/config/git/config.local"
 }
 
 module_unlink() {
   unlink_path "$HOME/.config/git/config"
   unlink_path "$HOME/.config/git/ignore"
+  unlink_path "$DOTFILES_DIR/config/git/config.local"
   if [[ -e "$HOME/.gitconfig.bak" ]]; then
     mv "$HOME/.gitconfig.bak" "$HOME/.gitconfig"
     ok "restored ~/.gitconfig"
