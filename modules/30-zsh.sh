@@ -4,7 +4,7 @@ module_run() {
   local d="$DOTFILES_DIR"
 
   if [[ "${DRY_RUN:-false}" == true ]]; then
-    info "[dry-run] would link home/.zshenv home/.zprofile home/.zshrc home/.zsh/*.zsh, seed *.local"
+    info "[dry-run] would link home/.zshenv home/.zprofile home/.zshrc home/.zsh/*.zsh, seed *.local and link them back into home/"
     return 0
   fi
 
@@ -25,6 +25,8 @@ module_run() {
       cp "$d/home/.$rc.local.example" "$HOME/.$rc.local"
       ok "seeded ~/.$rc.local"
     fi
+    # Reverse link (repo -> ~) so the real file is editable from the repo.
+    link "$HOME/.$rc.local" "$d/home/.$rc.local"
   done
 }
 
@@ -34,5 +36,8 @@ module_unlink() {
   unlink_path "$HOME/.zshrc"
   for f in "$DOTFILES_DIR"/home/.zsh/*.zsh; do
     unlink_path "$HOME/.zsh/$(basename "$f")"
+  done
+  for rc in zshenv zprofile zshrc; do
+    unlink_path "$DOTFILES_DIR/home/.$rc.local"
   done
 }

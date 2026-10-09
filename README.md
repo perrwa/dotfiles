@@ -83,6 +83,8 @@ Move anything worth keeping into `Brewfile`/`Brewfile.optional`, delete `Brewfil
 - git links `~/.config/git/config` + `ignore`. Identity/signing (`user.name`/`email`, `gpgsign`) is tracked; `signingkey`, `allowedSignersFile`, per-dir `includeIf` go in untracked `config.local`. An existing `~/.gitconfig` makes git ignore XDG config, so the module removes it (backs up to `~/.gitconfig.bak` first).
 - ssh links `~/.ssh/config`, which tracks only the personal `github.com` host (repo is public). Work hosts go in untracked `config.local`.
 
+Each seeded `*.local` file is also symlinked back into the repo (e.g. `home/.zshrc.local`, `ssh/config.local`), built from `$HOME` at bootstrap time so it works on any machine. They're gitignored; edit them from either side.
+
 ## macOS settings
 
 `modules/defaults/*.sh`, one file per domain. Dock's `persistent-apps` wipe is first-run-only (sentinel at `~/.local/state/dotfiles/dock-reset`), so re-running never clears a Dock you've since rearranged.
